@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in serv_addr;
     char message[512] = {0};
     int str_len;
+    int msg_len = 0;
 
     if(argc != 3)
     {
@@ -33,8 +34,12 @@ int main(int argc, char *argv[])
         error_handling("connect() error");
 
     fgets(message, 512, stdin);
-    write(sock, message, sizeof(message) - 1);
-    str_len = read(sock, message, strlen(message));
+    str_len = strlen(message);
+    write(sock, message, str_len);
+    while(msg_len < str_len)
+    {
+        msg_len += read(sock, message, str_len);
+    }
     if(str_len == -1)
         error_handling("read() error");
 
